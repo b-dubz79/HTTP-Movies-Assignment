@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import MovieCard from './MovieCard';
 
-function Movie({ addToSavedList }) {
+function Movie( props ) {
   const [movie, setMovie] = useState(null);
   const match = useRouteMatch();
+  const history = useHistory();
+  console.log(history)
 
   const fetchMovie = id => {
     axios
@@ -15,8 +17,14 @@ function Movie({ addToSavedList }) {
   };
 
   const saveMovie = () => {
-    addToSavedList(movie);
+    props.addToSavedList(movie);
   };
+
+  // ********** Add the function to navigate to update form ********** //
+  const routeToUpdateForm = e => {
+    e.preventDefault();
+    history.push(`/update-movie/${movie.id}`)
+  }
 
   useEffect(() => {
     fetchMovie(match.params.id);
@@ -33,6 +41,7 @@ function Movie({ addToSavedList }) {
       <div className='save-button' onClick={saveMovie}>
         Save
       </div>
+      <button onClick={routeToUpdateForm}>Update</button>
     </div>
   );
 }
